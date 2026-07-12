@@ -3,6 +3,8 @@ package com.ecommerce.smarttaskmanager.controller;
 import com.ecommerce.smarttaskmanager.dto.TaskRequestDto;
 import com.ecommerce.smarttaskmanager.dto.TaskResponseDto;
 import com.ecommerce.smarttaskmanager.entity.Task;
+import com.ecommerce.smarttaskmanager.enums.TaskPriority;
+import com.ecommerce.smarttaskmanager.enums.TaskStatus;
 import com.ecommerce.smarttaskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -57,5 +59,32 @@ public class TaskController {
     public List<TaskResponseDto> searchTasks(@RequestParam String keyword) {
 
         return taskService.searchTasks(keyword);
+    }
+
+    @GetMapping("/tasks/filter/status")
+    public List<TaskResponseDto> getTasksByStatus(
+            @RequestParam TaskStatus status) {
+
+        return taskService.getTasksByStatus(status);
+    }
+
+    @GetMapping("/tasks/filter/priority")
+    public List<TaskResponseDto> getTasksByPriority(
+            @RequestParam TaskPriority priority) {
+
+        return taskService.getTasksByPriority(priority);
+    }
+
+    @GetMapping("/tasks/filter")
+    public Page<TaskResponseDto> filterTasks(
+            @RequestParam(required = false) TaskStatus status,
+            @RequestParam(required = false) TaskPriority priority,
+            @RequestParam(required = false) String title,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        return taskService.filterTasks(status, priority, title, page, size, sortBy, direction);
     }
 }
