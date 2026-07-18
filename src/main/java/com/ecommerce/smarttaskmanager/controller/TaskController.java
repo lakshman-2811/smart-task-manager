@@ -87,4 +87,12 @@ public class TaskController {
 
         return taskService.filterTasks(status, priority, title, page, size, sortBy, direction);
     }
+
+    @PutMapping("/{taskId}/assign/{userId}")
+    public TaskResponseDto assignTask(
+            @PathVariable Long taskId,
+            @PathVariable Long userId) {
+
+        return taskService.assignTask(taskId, userId);
+    }
 }

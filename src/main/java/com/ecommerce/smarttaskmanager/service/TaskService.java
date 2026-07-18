@@ -31,5 +31,6 @@ public interface TaskService {
                                       String title, int page, int size,
                                       String sortBy, String direction);
 
+    TaskResponseDto assignTask(Long taskId, Long userId);
 
 }

@@ -36,4 +36,8 @@ public class Task {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "assigned_to")
+    private User assignedUser;
 }

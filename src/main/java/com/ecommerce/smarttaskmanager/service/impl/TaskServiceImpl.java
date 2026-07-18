@@ -3,11 +3,13 @@ package com.ecommerce.smarttaskmanager.service.impl;
 import com.ecommerce.smarttaskmanager.dto.TaskRequestDto;
 import com.ecommerce.smarttaskmanager.dto.TaskResponseDto;
 import com.ecommerce.smarttaskmanager.entity.Task;
+import com.ecommerce.smarttaskmanager.entity.User;
 import com.ecommerce.smarttaskmanager.enums.TaskPriority;
 import com.ecommerce.smarttaskmanager.enums.TaskStatus;
 import com.ecommerce.smarttaskmanager.exception.TaskNotFoundException;
 import com.ecommerce.smarttaskmanager.mapper.TaskMapper;
 import com.ecommerce.smarttaskmanager.repository.TaskRepository;
+import com.ecommerce.smarttaskmanager.repository.UserRepository;
 import com.ecommerce.smarttaskmanager.service.TaskService;
 import com.ecommerce.smarttaskmanager.specification.TaskSpecification;
 import org.slf4j.Logger;
@@ -26,10 +28,12 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
     private static final Logger log = LoggerFactory.getLogger(TaskServiceImpl.class);
 
-    public TaskServiceImpl(TaskRepository taskRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository) {
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -186,6 +190,34 @@ public class TaskServiceImpl implements TaskService {
         response.setDueDate(task.getDueDate());
         response.setCreatedAt(task.getCreatedAt());
         response.setUpdatedAt(task.getUpdatedAt());
+        if (task.getAssignedUser() != null) {
+            response.setAssignedUserId(
+                    task.getAssignedUser().getId());
+            response.setAssignedUserName(
+                    task.getAssignedUser().getName());
+        }
         return response;
+    }
+
+    @Override
+    public TaskResponseDto assignTask(Long taskId,
+                                      Long userId) {
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() ->
+                        new TaskNotFoundException(
+                                "Task not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "User not found"));
+
+        task.setAssignedUser(user);
+
+        Task updatedTask =
+                taskRepository.save(task);
+
+        return mapToResponse(updatedTask);
     }
 }
