@@ -1,4 +1,4 @@
-package com.ecommerce.smarttaskmanager.service.impl;
+package com.ecommerce.smarttaskmanager.service;
 
 import com.ecommerce.smarttaskmanager.dto.LoginRequestDto;
 import com.ecommerce.smarttaskmanager.dto.LoginResponseDto;
@@ -8,7 +8,6 @@ import com.ecommerce.smarttaskmanager.entity.User;
 import com.ecommerce.smarttaskmanager.enums.UserRole;
 import com.ecommerce.smarttaskmanager.repository.UserRepository;
 import com.ecommerce.smarttaskmanager.security.JwtService;
-import com.ecommerce.smarttaskmanager.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;

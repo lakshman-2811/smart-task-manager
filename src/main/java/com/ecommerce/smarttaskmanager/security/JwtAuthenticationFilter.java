@@ -29,11 +29,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        String path = request.getServletPath();
+
+        if (path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-resources")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader =
                 request.getHeader("Authorization");
 
-        if (authHeader == null ||
-                !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null
+                || !authHeader.startsWith("Bearer ")) {
 
             filterChain.doFilter(request, response);
             return;
@@ -46,6 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             String email =
                     jwtService.extractEmail(token);
+
             String role =
                     jwtService.extractRole(token);
 
@@ -53,7 +64,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     new UsernamePasswordAuthenticationToken(
                             email,
                             null,
-                            List.of(new SimpleGrantedAuthority("ROLE_" + role)));
+                            List.of(
+                                    new SimpleGrantedAuthority(
+                                            "ROLE_" + role)));
 
             SecurityContextHolder
                     .getContext()

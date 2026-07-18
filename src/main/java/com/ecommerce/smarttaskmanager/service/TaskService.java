@@ -33,4 +33,6 @@ public interface TaskService {
 
     TaskResponseDto assignTask(Long taskId, Long userId);
 
+    List<TaskResponseDto> getMyTasks();
+
 }

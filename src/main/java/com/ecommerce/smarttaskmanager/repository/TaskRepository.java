@@ -17,4 +17,8 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
     List<Task> findByStatus(TaskStatus status);
 
     List<Task> findByPriority(TaskPriority priority);
+
+    List<Task> findByAssignedUserEmail(String email);
+
+    long countByStatus(TaskStatus status);
 }
