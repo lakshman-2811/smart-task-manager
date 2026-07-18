@@ -9,6 +9,7 @@ import com.ecommerce.smarttaskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class TaskController {
         return taskService.updateTask(id, taskRequestDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/tasks/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
 
@@ -88,7 +90,8 @@ public class TaskController {
         return taskService.filterTasks(status, priority, title, page, size, sortBy, direction);
     }
 
-    @PutMapping("/{taskId}/assign/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/tasks/{taskId}/assign/{userId}")
     public TaskResponseDto assignTask(
             @PathVariable Long taskId,
             @PathVariable Long userId) {
