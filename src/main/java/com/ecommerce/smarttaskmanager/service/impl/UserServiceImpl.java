@@ -7,6 +7,7 @@ import com.ecommerce.smarttaskmanager.dto.UserResponseDto;
 import com.ecommerce.smarttaskmanager.entity.User;
 import com.ecommerce.smarttaskmanager.enums.UserRole;
 import com.ecommerce.smarttaskmanager.repository.UserRepository;
+import com.ecommerce.smarttaskmanager.security.JwtService;
 import com.ecommerce.smarttaskmanager.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +24,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -81,6 +84,7 @@ public class UserServiceImpl implements UserService {
 
         log.info("User logged in successfully: {}", request.getEmail());
 
-        return new LoginResponseDto("Login Successful");
+        String token = jwtService.generateToken(user.getEmail());
+        return new LoginResponseDto(token);
     }
 }
